@@ -23,6 +23,10 @@
         <module>infrastructure/service-discovery</module>
         <module>infrastructure/api-gateway</module>
         <module>services/auth-services</module>
+        <module>services/matchmaking-service</module>
+        <module>services/profile-service</module>
+        <module>services/timeline-service</module>
+        <module>services/ranking-service</module>
     </modules>
 
     <properties>
