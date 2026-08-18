@@ -1,0 +1,73 @@
+services:
+  service-discovery:
+    build:
+      context: ./infrastructure/service-discovery
+    ports:
+      - "48081:8081"
+    networks:
+      - tt-network
+
+  api-gateway:
+      build:
+        context: ./infrastructure/api-gateway
+      depends_on:
+        - service-discovery
+      ports:
+        - "48082:8082"
+      networks:
+        - tt-network
+
+
+  auth-service:
+    build:
+      context: ./services/auth-service
+    depends_on:
+        - service-discovery
+    ports:
+      - "48083:8083"
+    networks:
+      - tt-network
+
+  matchmaking-service:
+    build:
+      context: ./services/matchmaking-service
+    depends_on:
+      - service-discovery
+    ports:
+      - "48084:8084"
+    networks:
+      - tt-network
+
+  profile-service:
+    build:
+      context: ./services/profile-service
+    depends_on:
+      - service-discovery
+    ports:
+      - "48085:8085"
+    networks:
+      - tt-network
+
+  ranking-service:
+    build:
+      context: ./services/ranking-service
+    depends_on:
+      - service-discovery
+    ports:
+      - "48086:8086"
+    networks:
+      - tt-network
+
+  timeline-service:
+    build:
+      context: ./services/timeline-service
+    depends_on:
+      - service-discovery
+    ports:
+      - "48087:8087"
+    networks:
+      - tt-network
+
+networks:
+  tt-network:
+    driver: bridge
