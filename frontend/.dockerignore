@@ -1,0 +1,41 @@
+# frontend/.dockerignore
+# Dependências
+node_modules/
+npm-debug.log*
+
+# Build
+dist/
+build/
+
+# Ambiente
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Testes
+coverage/
+*.test.js
+*.spec.js
+__tests__/
+
+# Git
+.git/
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# Documentação
+README.md
+docs/

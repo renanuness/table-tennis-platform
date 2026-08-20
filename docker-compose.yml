@@ -1,7 +1,8 @@
 services:
+  #---BACKEND---
   service-discovery:
     build:
-      context: ./infrastructure/service-discovery
+      context: backend/infrastructure/service-discovery
     ports:
       - "48081:8081"
     networks:
@@ -9,7 +10,7 @@ services:
 
   api-gateway:
       build:
-        context: ./infrastructure/api-gateway
+        context: backend/infrastructure/api-gateway
       depends_on:
         - service-discovery
       ports:
@@ -17,10 +18,18 @@ services:
       networks:
         - tt-network
 
-
   auth-service:
     build:
-      context: ./services/auth-service
+      context: backend/services/auth-service
+    environment:
+        - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-discovery:8081/eureka/
+        - SPRING_APPLICATION_NAME=auth-service
+        # Configuração do banco de dados
+        - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-auth:5432/auth_db
+        - SPRING_DATASOURCE_USERNAME=ttplatform
+        - SPRING_DATASOURCE_PASSWORD=ttplatform123
+        - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+        - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
     depends_on:
         - service-discovery
     ports:
@@ -30,7 +39,16 @@ services:
 
   matchmaking-service:
     build:
-      context: ./services/matchmaking-service
+      context: backend/services/matchmaking-service
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-discovery:8081/eureka/
+      - SPRING_APPLICATION_NAME=matchmaking-service
+      # Configuração do banco de dados
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-matchmaking:5431/matchmaking_db
+      - SPRING_DATASOURCE_USERNAME=ttplatform
+      - SPRING_DATASOURCE_PASSWORD=ttplatform123
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
     depends_on:
       - service-discovery
     ports:
@@ -40,7 +58,7 @@ services:
 
   profile-service:
     build:
-      context: ./services/profile-service
+      context: backend/services/profile-service
     depends_on:
       - service-discovery
     ports:
@@ -50,7 +68,7 @@ services:
 
   ranking-service:
     build:
-      context: ./services/ranking-service
+      context: backend/services/ranking-service
     depends_on:
       - service-discovery
     ports:
@@ -60,7 +78,7 @@ services:
 
   timeline-service:
     build:
-      context: ./services/timeline-service
+      context: backend/services/timeline-service
     depends_on:
       - service-discovery
     ports:
@@ -68,6 +86,82 @@ services:
     networks:
       - tt-network
 
+  #---DATABASES---
+
+  # PostgreSQL para Auth Service
+  postgres-auth:
+    image: postgres:16-alpine
+    container_name: db-auth
+    environment:
+      POSTGRES_DB: auth_db
+      POSTGRES_USER: ttplatform
+      POSTGRES_PASSWORD: ttplatform123
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5431:5432"
+    volumes:
+      - postgres-auth-data:/var/lib/postgresql/data
+      - ./scripts/init-auth-db.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - tt-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ttplatform -d auth_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # PostgreSQL para Matchmaking Service
+  postgres-matchmaking:
+    image: postgres:16-alpine
+    container_name: db-matchmaking
+    environment:
+      POSTGRES_DB: matchmaking_db
+      POSTGRES_USER: ttplatform
+      POSTGRES_PASSWORD: ttplatform123
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-matchmaking-data:/var/lib/postgresql/data
+      - ./scripts/init-matchmaking-db.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - tt-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ttplatform -d matchmaking_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  #FRONTEND
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      #target: ${BUILD_TARGET:-development}
+    container_name: ttplatform-web
+    environment:
+      VITE_API_URL: http://api-gateway:8082/api
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - tt-network
+    depends_on:
+      - api-gateway
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+
 networks:
   tt-network:
     driver: bridge
+
+# ----- VOLUMES -----
+volumes:
+  postgres-auth-data:
+    name: tt-postgres-auth-data
+  postgres-matchmaking-data:
+    name: tt-postgres-matchmaking-data
