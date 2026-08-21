@@ -7,8 +7,8 @@ import com.ttplatform.auth.presentation.dtos.LoginRequest;
 import com.ttplatform.auth.presentation.dtos.RegisterRequest;
 import com.ttplatform.auth.domain.interfaces.repositories.UserRepository;
 import com.ttplatform.auth.domain.exceptions.UserAlreadyExistsException;
+import com.ttplatform.auth.security.PasswordManager;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
@@ -23,11 +23,13 @@ public class AuthService {
             throw new UserAlreadyExistsException("Email já cadastrado: " + request.getEmail());
         }
 
+        var hashedPassword = PasswordManager.hashPassword(request.getPassword());
         User user = new User(
                 request.getName(),
                 request.getEmail(),
-                request.getPassword()
+                hashedPassword
         );
+
 
         User savedUser = userRepository.save(user);
 
