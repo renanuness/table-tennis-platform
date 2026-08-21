@@ -17,6 +17,7 @@ export function Register() {
     const onSubmit = async (data) => {
         try {
             setError('');
+            console.log(data);
             await registerUser(data);
             navigate('/login');
         } catch (err) {
@@ -41,7 +42,7 @@ export function Register() {
                             Nome
                         </label>
                         <input
-                            {...register('nome', {
+                            {...register('name', {
                                 required: 'Nome é obrigatório',
                                 minLength: { value: 3, message: 'Mínimo 3 caracteres' }
                             })}
@@ -79,7 +80,7 @@ export function Register() {
                             Senha
                         </label>
                         <input
-                            {...register('senha', {
+                            {...register('password', {
                                 required: 'Senha é obrigatória',
                                 minLength: { value: 6, message: 'Mínimo 6 caracteres' }
                             })}
