@@ -1,8 +1,8 @@
 package com.ttplatform.auth.infra;
 
-import com.ttplatform.auth.domain.interfaces.repositories.UserRepository;
-import com.ttplatform.auth.domain.models.User;
-import com.ttplatform.auth.infra.entities.UserEntity;
+import com.ttplatform.auth.domain.repository.UserRepository;
+import com.ttplatform.auth.domain.model.User;
+import com.ttplatform.auth.infra.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
