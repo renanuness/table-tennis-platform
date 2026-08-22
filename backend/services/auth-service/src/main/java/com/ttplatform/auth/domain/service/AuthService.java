@@ -1,6 +1,7 @@
 package com.ttplatform.auth.domain.service;
 
 import com.ttplatform.auth.domain.exception.LoginInvalidoException;
+import com.ttplatform.auth.domain.exception.UserNotFoundExcpetion;
 import com.ttplatform.auth.domain.model.User;
 import com.ttplatform.auth.application.dto.AuthResponse;
 import com.ttplatform.auth.application.dto.LoginRequest;
@@ -11,6 +12,8 @@ import com.ttplatform.auth.security.PasswordManager;
 import com.ttplatform.auth.security.TokenManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 
 @Service
@@ -47,5 +50,11 @@ public class AuthService {
         }
 
         throw new LoginInvalidoException();
+    }
+
+    public User getUserById(UUID id) {
+        var user = userRepository.findById(id).orElseThrow(()-> new UserNotFoundExcpetion());
+
+        return user;
     }
 }
