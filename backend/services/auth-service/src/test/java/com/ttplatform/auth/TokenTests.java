@@ -1,6 +1,6 @@
 package com.ttplatform.auth;
 
-import com.ttplatform.auth.domain.models.User;
+import com.ttplatform.auth.domain.model.User;
 import com.ttplatform.auth.security.TokenManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -112,23 +112,23 @@ services:
     restart: unless-stopped
 
   # PostgreSQL para Matchmaking Service
-  postgres-matchmaking:
-    image: postgres:16-alpine
+  mongodb-matchmaking:
+    image: mongo:8.3.8-noble
     container_name: db-matchmaking
+    hostname: mongodb
     environment:
-      POSTGRES_DB: matchmaking_db
-      POSTGRES_USER: ttplatform
-      POSTGRES_PASSWORD: ttplatform123
-      PGDATA: /var/lib/postgresql/data/pgdata
+      - MONGODB_INITDB_ROOT_USERNAME=ttplatform
+      - MONGODB_INTIDB_ROOT_PASSWORD=ttplatform123
     ports:
-      - "5433:5432"
+      - "27017:27017"
     volumes:
-      - postgres-matchmaking-data:/var/lib/postgresql/data
-      - ./scripts/init-matchmaking-db.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./init:/docker-entrypoint-initdb.d
+      - db:/data/db
+      - mongot:/data/mongot
     networks:
       - tt-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ttplatform -d matchmaking_db"]
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')", "--quiet"]
       interval: 10s
       timeout: 5s
       retries: 5

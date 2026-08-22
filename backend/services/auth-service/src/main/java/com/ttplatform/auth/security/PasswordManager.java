@@ -11,4 +11,9 @@ public class PasswordManager {
         var hash = Password.hash(plainTextPassword).addRandomSalt(42).with(myargon2);
         return hash.getResult();
     }
+
+    public static boolean verifyPassword(String userProvidedPassword, String hashFromDB){
+        Argon2Function myArgon2 = Argon2Function.getInstance(1024, 3, 2, 32, Argon2.ID, 19);
+         return Password.check(userProvidedPassword, hashFromDB).with(myArgon2);
+    }
 }

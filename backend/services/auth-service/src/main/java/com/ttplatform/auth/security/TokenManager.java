@@ -1,7 +1,7 @@
 package com.ttplatform.auth.security;
 
-import com.ttplatform.auth.domain.exceptions.InvalidTokenException;
-import com.ttplatform.auth.domain.models.User;
+import com.ttplatform.auth.domain.exception.InvalidTokenException;
+import com.ttplatform.auth.domain.model.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.data.repository.init.ResourceReader;
@@ -29,7 +29,6 @@ public class TokenManager {
     }
 
     private static byte[] getPrivateKeyFromString(String pemKey) throws Exception {
-
         String privateKeyPEM = pemKey
                 .replace("-----BEGIN OPENSSH PRIVATE KEY-----", "")
                 .replace("-----END OPENSSH PRIVATE KEY-----", "")
