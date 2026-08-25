@@ -1,7 +1,7 @@
-package com.ttplatform.auth.infra;
+package com.ttplatform.auth.infra.data;
 
 
-import com.ttplatform.auth.infra.entity.UserEntity;
+import com.ttplatform.auth.infra.data.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,4 +1,4 @@
-package com.ttplatform.auth.infra.entity;
+package com.ttplatform.auth.infra.data.entity;
 
 import com.ttplatform.auth.domain.model.User;
 import jakarta.persistence.*;
