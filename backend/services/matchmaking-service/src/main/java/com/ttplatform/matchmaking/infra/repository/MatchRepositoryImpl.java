@@ -2,13 +2,17 @@ package com.ttplatform.matchmaking.infra.repository;
 
 import com.ttplatform.matchmaking.domain.model.Match;
 import com.ttplatform.matchmaking.domain.repository.MatchRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class MatchRepositoryImpl implements MatchRepository {
 
-    @Autowired
-    private MatchRepositoryMongoDb matchRepositoryMongoDb;
-    
+    private final MatchRepositoryMongoDb matchRepositoryMongoDb;
+
+    public MatchRepositoryImpl(MatchRepositoryMongoDb matchRepositoryMongoDb) {
+        this.matchRepositoryMongoDb = matchRepositoryMongoDb;
+    }
+
     @Override
     public void createMatch(Match match) {
 

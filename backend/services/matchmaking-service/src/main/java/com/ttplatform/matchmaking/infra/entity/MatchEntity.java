@@ -1,14 +1,17 @@
 package com.ttplatform.matchmaking.infra.entity;
 
+import com.ttplatform.matchmaking.domain.model.MatchStatus;
+import com.ttplatform.matchmaking.domain.model.MatchType;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
 import java.util.List;
 
 @Document(collection = "matches")
-public class Match {
+public class MatchEntity {
 
     @Id
     private String id;

@@ -2,6 +2,13 @@
 
 Um sistema que permite usuários encontrar e desafiar oponentes para aumentar sua pontuação em um ranking.
 
+## RUN
+
+```
+docker compose up --build
+```
+- Eureka: http://localhost:48081/
+- Frontend: http://localhost:80
 
 ## TODO
 ### Frontend

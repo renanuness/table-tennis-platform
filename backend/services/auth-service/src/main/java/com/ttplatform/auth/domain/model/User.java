@@ -48,9 +48,5 @@ public class User {
     public String getPassword() {
         return this.password;
     }
-
-    public boolean isPasswordCorrect(String password) {
-        return password.equals(this.password);
-    }
 }
 

@@ -1,6 +1,9 @@
 package com.ttplatform.auth.domain.service;
 
+import com.ttplatform.auth.domain.events.Publisher;
+import com.ttplatform.auth.domain.events.UserCreatedEvent;
 import com.ttplatform.auth.domain.exception.LoginInvalidoException;
+import com.ttplatform.auth.domain.exception.UserNotFoundExcpetion;
 import com.ttplatform.auth.domain.model.User;
 import com.ttplatform.auth.application.dto.AuthResponse;
 import com.ttplatform.auth.application.dto.LoginRequest;
@@ -12,12 +15,15 @@ import com.ttplatform.auth.security.TokenManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final Publisher publisher;
 
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
@@ -33,7 +39,7 @@ public class AuthService {
 
 
         User savedUser = userRepository.save(user);
-
+        publisher.Send(new UserCreatedEvent(savedUser.getId(), savedUser.getName(), savedUser.getEmail()));
         String token = TokenManager.createToken(savedUser);
         return new AuthResponse(savedUser, token);
     }
@@ -47,5 +53,11 @@ public class AuthService {
         }
 
         throw new LoginInvalidoException();
+    }
+
+    public User getUserById(UUID id) {
+        var user = userRepository.findById(id).orElseThrow(()-> new UserNotFoundExcpetion());
+
+        return user;
     }
 }
