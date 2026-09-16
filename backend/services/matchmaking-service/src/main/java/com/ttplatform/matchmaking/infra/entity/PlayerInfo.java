@@ -1,6 +1,4 @@
 package com.ttplatform.matchmaking.infra.entity;
 
-public class PlayerInfo {
-    private String userId;
-    private String name;
+public record PlayerInfo(String userId, String name){
 }

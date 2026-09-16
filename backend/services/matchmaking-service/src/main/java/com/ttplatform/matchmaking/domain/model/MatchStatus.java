@@ -5,5 +5,6 @@ public enum MatchStatus {
     SCHEDULED,
     STARTED,
     FINISHED,
+    REJECTED,
     ABANDONED
 }

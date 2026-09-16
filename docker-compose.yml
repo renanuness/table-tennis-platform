@@ -116,7 +116,7 @@ services:
 
   # MONGODB para Matchmaking Service
   mongodb-matchmaking:
-    image: mongo:8.3.8-noble
+    image: mongo:8.0.4-noble
     container_name: db-matchmaking
     hostname: mongodb
     environment:
@@ -135,6 +135,17 @@ services:
       timeout: 5s
       retries: 5
     restart: unless-stopped
+
+  mongo-gui:
+    container_name: "mongo-gui"
+    image: ugleiton/mongo-gui
+    restart: always
+    ports:
+      - "44321:4321"
+    networks:
+      - tt-network
+    environment:
+      - MONGO_URL=mongodb://mongodb-matchmaking:27017
 
   # ======= RABBIT MQ ========
   rabbitmq:
