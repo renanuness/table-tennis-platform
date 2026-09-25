@@ -75,10 +75,10 @@ public class MatchEntity {
     private static List<GameInfo> gamesFromDomain(Match match){
 
         var gamesInfo = new ArrayList<GameInfo>();
-        for(var i = 1; i <= match.getGames().size(); i++){
+        for(var i = 0; i < match.getGames().size(); i++){
             var game = match.getGames().get(i);
             var gameInfo = new GameInfo(
-                    1,
+                    i+1,
                     match.getPlayer1().toString(),
                     match.getPlayer2().toString(),
                     game.getPlayer1Points(),
@@ -92,7 +92,7 @@ public class MatchEntity {
 
     private List<Game> gamesToDomain(){
         var games = new ArrayList<Game>();
-        for(var i = 1; i <= this.games.size(); i++){
+        for(var i = 0; i < this.games.size(); i++){
             var gameInfo = this.games.get(i);
             var game = new Game(
                     gameInfo.getPlayerPoints(players.get(0).userId()),

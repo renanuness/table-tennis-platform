@@ -1,9 +1,7 @@
 package com.ttplatform.matchmaking.application.controller;
 
-import com.ttplatform.matchmaking.domain.dto.AnswerInviteDto;
-import com.ttplatform.matchmaking.domain.dto.SendInviteDto;
+import com.ttplatform.matchmaking.domain.dto.*;
 import com.ttplatform.matchmaking.domain.service.MatchService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,9 +39,16 @@ public class MatchController {
         return ResponseEntity.ok(matches);
     }
 
-    @PostMapping("/start-match/{matchId}")
-    public ResponseEntity startMatch(@PathVariable UUID matchId){
-        var match = matchService.startMatch(matchId);
+    @PostMapping("/start-match")
+    public ResponseEntity startMatch(@RequestBody StartMatchDto dto){
+        var match = matchService.startMatch(dto);
+
+        return ResponseEntity.ok(match);
+    }
+
+    @PostMapping("/finish-match")
+    public ResponseEntity finishMatch(@RequestBody FinishMatchDto dto){
+        var match = matchService.finishMatch(dto);
 
         return ResponseEntity.ok(match);
     }

@@ -1,6 +1,7 @@
 package com.ttplatform.matchmaking.domain.model;
 
 import java.util.UUID;
+import com.ttplatform.matchmaking.domain.exceptions.InvalidMatchScore;
 
 public class Game{
     private short player1Points;
@@ -25,5 +26,13 @@ public class Game{
 
     public void setPlayer2Points(short player2Points) {
         this.player2Points = player2Points;
+    }
+
+    public boolean isValid(){
+        if((Math.abs(player1Points - player2Points) < 2) || (player1Points < 11 && player2Points < 11 )){
+            return false;
+        }
+
+        return true;
     }
 }
