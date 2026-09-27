@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: prfile-service-deployment
+  name: profile-service-deployment
   labels:
     app: profile-service
 spec:

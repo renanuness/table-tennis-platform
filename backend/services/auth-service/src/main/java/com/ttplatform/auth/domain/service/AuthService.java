@@ -13,8 +13,12 @@ import com.ttplatform.auth.domain.exception.UserAlreadyExistsException;
 import com.ttplatform.auth.security.PasswordManager;
 import com.ttplatform.auth.security.TokenManager;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
+import net.logstash.logback.argument.StructuredArguments;
+import static net.logstash.logback.argument.StructuredArguments.kv;
+import static net.logstash.logback.argument.StructuredArguments.value;
 import java.util.UUID;
 
 
@@ -24,7 +28,7 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final Publisher publisher;
-
+    private static final Logger log = LoggerFactory.getLogger(AuthService.class);
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new UserAlreadyExistsException("Email já cadastrado: " + request.getEmail());
@@ -41,6 +45,10 @@ public class AuthService {
         User savedUser = userRepository.save(user);
         publisher.Send(new UserCreatedEvent(savedUser.getId(), savedUser.getName(), savedUser.getEmail()));
         String token = TokenManager.createToken(savedUser);
+
+        log.info("Usuário registrado",
+                kv("user_id", savedUser.getId()));
+
         return new AuthResponse(savedUser, token);
     }
 
