@@ -1,0 +1,23 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'auth-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['auth-service:8083'] # Troque pelo nome do container do serviço de auth
+
+  - job_name: 'matchmaking-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['matchmaking-service:8084'] # Troque pelo nome/porta do profile
+
+  - job_name: 'profile-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['profile-service:8085'] # Troque pelo nome/porta do profile
+
+  - job_name: 'ranking-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['ranking-service:8086'] # Troque pelo nome/porta do ranking
