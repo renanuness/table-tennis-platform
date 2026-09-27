@@ -1,5 +1,6 @@
 package com.ttplatform.auth.infra.rabbitmq;
 
+import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.context.annotation.Bean;
@@ -21,5 +22,11 @@ public class RabbitConfiguration {
     @Bean
     public Queue userCreated() {
         return new Queue("user.created", true);
+    }
+
+    @Bean
+    public FanoutExchange userCreatedExchange() {
+        // Exchange chamado "user.created.exchange"
+        return new FanoutExchange("user.created.exchange");
     }
 }

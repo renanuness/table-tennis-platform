@@ -63,6 +63,13 @@ services:
       - service-discovery
     ports:
       - "48085:8085"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-discovery:8081/eureka/
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-profile:5432/profile_db
+      - SPRING_DATASOURCE_USERNAME=ttplatform
+      - SPRING_DATASOURCE_PASSWORD=ttplatform123
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
     networks:
       - tt-network
 
@@ -74,6 +81,11 @@ services:
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-discovery:8081/eureka/
       - SPRING_APPLICATION_NAME=ranking-service
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-ranking:5432/ranking_db
+      - SPRING_DATASOURCE_USERNAME=ttplatform
+      - SPRING_DATASOURCE_PASSWORD=ttplatform123
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
     ports:
       - "48086:8086"
     networks:
@@ -101,7 +113,7 @@ services:
       POSTGRES_PASSWORD: ttplatform123
       PGDATA: /var/lib/postgresql/data/pgdata
     ports:
-      - "5431:5432"
+      - "5430:5432"
     volumes:
       - postgres-auth-data:/var/lib/postgresql/data
       - ./scripts/init-auth-db.sql:/docker-entrypoint-initdb.d/init.sql
@@ -114,9 +126,55 @@ services:
       retries: 5
     restart: unless-stopped
 
+  # PostgreSQL para Auth Service
+  postgres-profile:
+    image: postgres:16-alpine
+    container_name: db-profile
+    environment:
+      POSTGRES_DB: profile_db
+      POSTGRES_USER: ttplatform
+      POSTGRES_PASSWORD: ttplatform123
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5431:5432"
+    volumes:
+      - postgres-profile-data:/var/lib/postgresql/data
+      - ./scripts/init-profile-db.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - tt-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ttplatform -d profile_db" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # PostgreSQL para Auth Service
+  postgres-ranking:
+    image: postgres:16-alpine
+    container_name: db-ranking
+    environment:
+      POSTGRES_DB: ranking_db
+      POSTGRES_USER: ttplatform
+      POSTGRES_PASSWORD: ttplatform123
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-ranking-data:/var/lib/postgresql/data
+      - ./scripts/init-profile-db.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - tt-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ttplatform -d ranking_db" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
   # MONGODB para Matchmaking Service
   mongodb-matchmaking:
-    image: mongo:8.3.8-noble
+    image: mongo:8.0.4-noble
     container_name: db-matchmaking
     hostname: mongodb
     environment:
@@ -136,6 +194,17 @@ services:
       retries: 5
     restart: unless-stopped
 
+  mongo-gui:
+    container_name: "mongo-gui"
+    image: ugleiton/mongo-gui
+    restart: always
+    ports:
+      - "44321:4321"
+    networks:
+      - tt-network
+    environment:
+      - MONGO_URL=mongodb://mongodb-matchmaking:27017
+
   # ======= RABBIT MQ ========
   rabbitmq:
     container_name: rabbitmq
@@ -153,6 +222,7 @@ services:
       - "58604:58604"
     networks:
       - tt-network
+
   # ======= FRONTEND =========
   frontend:
     build:
@@ -182,5 +252,9 @@ networks:
 volumes:
   postgres-auth-data:
     name: tt-postgres-auth-data
+  postgres-profile-data:
+    name: tt-postgres-profile-data
+  postgres-ranking-data:
+    name: tt-postgres-ranking-data
   mongodb-matchmaking-data:
     name: tt-postgres-matchmaking-data

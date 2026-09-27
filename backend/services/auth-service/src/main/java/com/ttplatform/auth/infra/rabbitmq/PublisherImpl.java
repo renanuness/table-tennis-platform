@@ -3,6 +3,9 @@ package com.ttplatform.auth.infra.rabbitmq;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ttplatform.auth.domain.events.Publisher;
 import com.ttplatform.auth.domain.events.UserCreatedEvent;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessagePostProcessor;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import org.springframework.stereotype.Service;
@@ -20,7 +23,9 @@ public class PublisherImpl implements Publisher {
         try{
             var objectMapper = new ObjectMapper();
             var stringjson = objectMapper.writeValueAsString(event);
-            rabbitTemplate.convertAndSend("user.created", stringjson);
+
+
+            rabbitTemplate.convertAndSend("user.created.exchange","", stringjson);
         }catch (Exception  e){
 
             System.out.println("ERROR PUBLICANDO MENSAGEM");
