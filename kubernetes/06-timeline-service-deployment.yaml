@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: timeline-service-deployment
+  labels:
+    app: timeline-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: timeline-service
+  template:
+    metadata:
+      labels:
+        app: timeline-service
+    spec:
+      containers:
+        - name: ttplatform-timeline-service
+          image: table-tennis-platform-timeline-service:latest
+          imagePullPolicy: IfNotPresent
+      restartPolicy: Always

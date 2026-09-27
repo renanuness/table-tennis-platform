@@ -5,9 +5,10 @@ import com.ttplatform.profile.domain.message.CreateUserProfileMessage;
 import com.ttplatform.profile.domain.service.ProfileService;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-@Service
+@Component
 public class Consumer {
     private final ProfileService service;
 
@@ -15,8 +16,7 @@ public class Consumer {
         this.service = service;
     }
 
-    @RabbitListener(queues = "user.created")
-
+    @RabbitListener(queues = "profile.user.created.queue")
     public void listen(String message){
         ObjectMapper objectMapper = new ObjectMapper();
         try {

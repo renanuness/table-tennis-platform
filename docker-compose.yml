@@ -81,7 +81,7 @@ services:
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-discovery:8081/eureka/
       - SPRING_APPLICATION_NAME=ranking-service
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-profile:5433/ranking_db
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-ranking:5432/ranking_db
       - SPRING_DATASOURCE_USERNAME=ttplatform
       - SPRING_DATASOURCE_PASSWORD=ttplatform123
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update

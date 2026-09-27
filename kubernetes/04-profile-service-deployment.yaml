@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prfile-service-deployment
+  labels:
+    app: profile-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: profile-service
+  template:
+    metadata:
+      labels:
+        app: profile-service
+    spec:
+      containers:
+        - name: ttplatform-profile-service
+          image: table-tennis-platform-profile-service:latest
+          imagePullPolicy: IfNotPresent
+      restartPolicy: Always

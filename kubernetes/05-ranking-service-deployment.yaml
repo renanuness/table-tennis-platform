@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ranking-service-deployment
+  labels:
+    app: ranking-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ranking-service
+  template:
+    metadata:
+      labels:
+        app: ranking-service
+    spec:
+      containers:
+        - name: ttplatform-ranking-service
+          image: table-tennis-platform-ranking-service:latest
+          imagePullPolicy: IfNotPresent
+      restartPolicy: Always
