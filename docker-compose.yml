@@ -223,6 +223,44 @@ services:
     networks:
       - tt-network
 
+  # ====== LOGGIN & OBSERVABILITY ======
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.19.22
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+    networks:
+      - tt-network
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.19.22
+    volumes:
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+    ports:
+      - "5000:5000"
+    depends_on:
+      - elasticsearch
+    networks:
+      - tt-network
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.19.22
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - SERVER_HOST=0.0.0.0
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - tt-network
+
+
   # ======= FRONTEND =========
   frontend:
     build:
@@ -258,3 +296,5 @@ volumes:
     name: tt-postgres-ranking-data
   mongodb-matchmaking-data:
     name: tt-postgres-matchmaking-data
+  es-data:
+    name: tt-esdata

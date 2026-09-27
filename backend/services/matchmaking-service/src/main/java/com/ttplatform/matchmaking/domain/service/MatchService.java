@@ -11,14 +11,19 @@ import com.ttplatform.matchmaking.domain.exceptions.PlayerNotFoundException;
 import com.ttplatform.matchmaking.domain.model.Match;
 import com.ttplatform.matchmaking.domain.repository.MatchRepository;
 import com.ttplatform.matchmaking.infra.client.AuthClient;
+import com.ttplatform.matchmaking.infra.rabbitmq.PublisherImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 import java.util.List;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 @Service
 public class MatchService {
-
+    private static final Logger log = LoggerFactory.getLogger(PublisherImpl.class);
     private final MatchRepository matchRepository;
     private final AuthClient authClient;
     private final Publisher publisher;
@@ -38,6 +43,9 @@ public class MatchService {
             throw new PlayerNotFoundException();
         }
         var match = Match.FromInvite(player1, player2);
+
+        log.info("Match created",
+                kv("source_service", "matchmaking"));
         return matchRepository.createMatch(match);
     }
 
@@ -61,6 +69,9 @@ public class MatchService {
 
         var updatedMatch = matchRepository.updateMatch(match);
 
+        log.info("Match started",
+                kv("source_service", "matchmaking"));
+
         return updatedMatch;
     }
 
@@ -74,6 +85,9 @@ public class MatchService {
         //PUBLISH EVENT OF MATCH FINISHED
         var loser = match.getWinner() == match.getPlayer1() ? match.getPlayer2() : match.getPlayer1();
         publisher.Send(new MatchFinishedEvent(match.getWinner(), loser));
+
+        log.info("Match finished",
+                kv("source_service", "matchmaking"));
 
         return matchUpdated;
     }
